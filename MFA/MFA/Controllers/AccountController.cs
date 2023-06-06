@@ -40,7 +40,7 @@ namespace MFA.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<string>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null)
@@ -57,7 +57,7 @@ namespace MFA.Controllers
             }
             else
             {
-                if (!result.RequiresTwoFactor)
+                if (result.RequiresTwoFactor)
                 {
                     var user1 = await _userManager.FindByEmailAsync(loginDto.Email);
 
@@ -73,25 +73,26 @@ namespace MFA.Controllers
                         "My Web App's OTP",
                         $"Please use this code as the OTP: {securityCode}");
 
-                    return
-                        new UserDto
-                        {
-                            Email = loginDto.Email,
-                            UserName = user.UserName,
-                            Token = _tokenServices.CreateToken(user),
-                            IsTwoFactor = true
-                        };
+                    return "ok";
+                        //new UserDto
+                        //{
+                        //    Email = loginDto.Email,
+                        //    UserName = user.UserName,
+                        //    Token = _tokenServices.CreateToken(user),
+                        //    IsTwoFactor = true
+                        //};
 
                 }
                 else
                 {
-                    return new UserDto
-                    {
-                        Email = loginDto.Email,
-                        UserName = user.UserName,
-                        Token = _tokenServices.CreateToken(user),
-                        IsTwoFactor = false
-                    };
+                    return "two factor page";
+                    //return new UserDto
+                    //{
+                    //    Email = loginDto.Email,
+                    //    UserName = user.UserName,
+                    //    Token = _tokenServices.CreateToken(user),
+                    //    IsTwoFactor = false
+                    //};
 
                 }
 
@@ -104,14 +105,8 @@ namespace MFA.Controllers
         [Route("twoFactorLoginPost")]
         public async Task<ActionResult<UserDto>> TwoFactorLoginPost(Credential credential)
         {
-            //  if (!ModelState.IsValid) return Page();
             var user = await _userManager.FindByEmailAsync(credential.Email);
             var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", credential.Securitycode);
-            //var result = await _signInManager.TwoFactorSignInAsync("Email",
-            //    credential.Securitycode,
-            //    true,
-            //    false);
-
             if (result== true)
             {
                 return new UserDto
@@ -131,7 +126,7 @@ namespace MFA.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<string>> Register(RegisterDto registerDto)
         {
             string confirmationToken = null;
             var user = new AppUser
@@ -139,7 +134,7 @@ namespace MFA.Controllers
                 Email = registerDto.Email,
                 UserName = registerDto.UserName,
                 FirstName = registerDto.UserName,
-                TwoFactorEnabled=true
+                TwoFactorEnabled=false
             };
             try
             {
@@ -168,24 +163,24 @@ namespace MFA.Controllers
                 new Exception(ex.Message);
             }
 
-            return new UserDto
-            {
-                Email = registerDto.Email,
-                UserName = user.UserName,
-                // Token = _tokenServices.CreateToken(user),
-                Token = confirmationToken,
-                Id = user.Id
-            };
+            //return new UserDto
+            //{
+            //    Email = registerDto.Email,
+            //    UserName = user.UserName,
+            //    Token = confirmationToken,
+            //    Id = user.Id
+            //};
+            return "Please confirm email";
         }
 
         [HttpGet]
         [Route("ConfirmEmail")]
-        public async Task<ActionResult<UserDto>> ConfirmEmail([FromQuery] string token, [FromQuery] string userId)
+        public async Task<ActionResult<string>> ConfirmEmail([FromQuery] string token, [FromQuery] string userId)
         {
             var userEntity = await _userManager.FindByIdAsync(userId);
             var confirmResult = await _userManager.ConfirmEmailAsync(userEntity, token);
 
-            return null;
+            return "please login";
         }
 
         [HttpGet]
