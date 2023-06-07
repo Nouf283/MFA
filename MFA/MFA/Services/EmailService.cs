@@ -33,6 +33,7 @@ namespace WebApp.Services
                     smtpSetting.Value.Password);
 
                 await emailClient.SendMailAsync(message);
+               // await emailClient.SendMailAsync(message);
             }
         }
     }
