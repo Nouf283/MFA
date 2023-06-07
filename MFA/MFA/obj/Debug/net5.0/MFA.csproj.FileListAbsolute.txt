@@ -85,3 +85,5 @@ C:\Projects\MFA\MFA\MFA\obj\Debug\net5.0\MFA.pdb
 C:\Projects\MFA\MFA\MFA\obj\Debug\net5.0\MFA.genruntimeconfig.cache
 C:\Projects\MFA\MFA\MFA\obj\Debug\net5.0\ref\MFA.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\Humanizer.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
