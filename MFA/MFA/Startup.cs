@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ namespace MFA
             {
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedAccount = true;
 
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager<SignInManager<AppUser>>().
@@ -66,8 +68,18 @@ namespace MFA
                 {
                     o.Cookie.Name = IdentityConstants.TwoFactorUserIdScheme;
                     o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                }
+                ).AddCookie(IdentityConstants.TwoFactorRememberMeScheme, o =>
+                {
+                    o.Cookie.Name = IdentityConstants.TwoFactorRememberMeScheme;
+                    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                }
+                ).
+                AddCookie(IdentityConstants.ApplicationScheme, o =>
+                {
+                    o.Cookie.Name = IdentityConstants.ApplicationScheme;
+                    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                 });
-
 
             services.AddAuthorization();
             services.AddMvc();

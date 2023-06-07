@@ -45,11 +45,12 @@ namespace MFA.Controllers
             var client = new HttpClient();
             //var user = await _userManager.GetUserAsync(base.User);
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Phone");
             await _userManager.ResetAuthenticatorKeyAsync(user);
             var key = await _userManager.GetAuthenticatorKeyAsync(user);
             string API_Url = "https://api.sms.net.bd/sendsms";
             string API_Key = "tP7Fk8U4GQq5JY2q2Bmf95zuZ92UFK7Z7t4pY37X";
-            string Text_Massage = key;
+            string Text_Massage = key+" "+securityCode;
             string To_Phone_Number = "8801885831037";
 
             client.BaseAddress = new Uri(API_Url);// //
@@ -75,13 +76,13 @@ namespace MFA.Controllers
 
         [HttpPost]
         [Route("code-check")]
-        public async Task<ActionResult<bool>> codeCheck(string key)
+        public async Task<ActionResult<bool>> codeCheck(LoginDto loginDto)
         {
-            var user = await _userManager.GetUserAsync(base.User);
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (await _userManager.VerifyTwoFactorTokenAsync(
                 user,
                 _userManager.Options.Tokens.AuthenticatorTokenProvider,
-                key))
+                loginDto.Key))
             {
                 await _userManager.SetTwoFactorEnabledAsync(user, true);
             }

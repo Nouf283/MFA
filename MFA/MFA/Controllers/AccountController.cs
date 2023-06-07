@@ -47,7 +47,8 @@ namespace MFA.Controllers
             {
                 return Unauthorized();
             }
-            var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, true, false);
+           // var isTwoFactorClientRemembered = await IsTwoFactorClientRememberedAsync(user);
+            var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password,true,false);
 
             //  var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -57,6 +58,7 @@ namespace MFA.Controllers
             }
             else
             {
+                //problem istwologin na hole auth error khay
                 if (result.RequiresTwoFactor)
                 {
                     var user1 = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -72,6 +74,8 @@ namespace MFA.Controllers
                         loginDto.Email,
                         "My Web App's OTP",
                         $"Please use this code as the OTP: {securityCode}");
+
+                    
 
                     return "ok";
                     //new UserDto
@@ -102,8 +106,8 @@ namespace MFA.Controllers
         }
 
         [HttpPost]
-        [Route("twoFactorLoginPost")]
-        public async Task<ActionResult<UserDto>> TwoFactorLoginPost(Credential credential)
+        [Route("twoFactorVerificationByEmail")]
+        public async Task<ActionResult<UserDto>> TwoFactorVerificationByEmail(Credential credential)
         {
             var user = await _userManager.FindByEmailAsync(credential.Email);
             var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", credential.Securitycode);
@@ -123,6 +127,59 @@ namespace MFA.Controllers
                 return Unauthorized();
             }
         }
+        [HttpPost]
+        [Route("twoFactorVerificationByOTP")]
+        public async Task<ActionResult<UserDto>> twoFactorVerificationByOTP(Credential credential)
+        {
+            var user = await _userManager.FindByEmailAsync(credential.Email);
+            var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Phone", credential.Securitycode);
+            user.PhoneNumberConfirmed = true;
+            await _userManager.UpdateAsync(user);
+            if (result == true)
+            {
+                //return new UserDto
+                //{
+                //    Email = credential.Email,
+                //    UserName = user.UserName,
+                //    Token = _tokenServices.CreateToken(user),
+                //    Id = user.Id
+                //};
+                return null;
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
+
+        [HttpPost]
+        [Route("twoFactorVerificationByAuthCode")]
+        public async Task<ActionResult<UserDto>> twoFactorVerificationByAuthCode(Credential credential)
+        {
+            var user = await _userManager.FindByEmailAsync(credential.Email);
+           // var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Phone", credential.Securitycode);
+            if (await this._userManager.VerifyTwoFactorTokenAsync(
+                user,
+                _userManager.Options.Tokens.AuthenticatorTokenProvider,
+                 credential.Securitycode))
+            {
+                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                
+                return new UserDto
+                {
+                    Email = credential.Email,
+                    UserName = user.UserName,
+                    Token = _tokenServices.CreateToken(user),
+                    Id = user.Id
+                };
+                //this.Succeeded = true;
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
 
         [HttpPost]
         [Route("register")]
@@ -134,7 +191,8 @@ namespace MFA.Controllers
                 Email = registerDto.Email,
                 UserName = registerDto.UserName,
                 FirstName = registerDto.UserName,
-                TwoFactorEnabled = false
+                PhoneNumber="008801885831037"
+               // TwoFactorEnabled = false
             };
             try
             {
@@ -144,6 +202,7 @@ namespace MFA.Controllers
                 {
                     return Unauthorized();
                 }
+              //  await _userManager.SetTwoFactorEnabledAsync(user, true);
                 confirmationToken = await this._userManager.GenerateEmailConfirmationTokenAsync(user);
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var param = new Dictionary<string, string?>
