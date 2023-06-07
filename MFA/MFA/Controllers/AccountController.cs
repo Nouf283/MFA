@@ -75,7 +75,7 @@ namespace MFA.Controllers
                         "My Web App's OTP",
                         $"Please use this code as the OTP: {securityCode}");
 
-                    
+                    // or get-code phase from AuthenticatorWithMFAController
 
                     return "ok";
                     //new UserDto
@@ -105,6 +105,7 @@ namespace MFA.Controllers
 
         }
 
+        // one type of two way verification
         [HttpPost]
         [Route("twoFactorVerificationByEmail")]
         public async Task<ActionResult<UserDto>> TwoFactorVerificationByEmail(Credential credential)
@@ -127,6 +128,7 @@ namespace MFA.Controllers
                 return Unauthorized();
             }
         }
+        // this way of verification
         [HttpPost]
         [Route("twoFactorVerificationByOTP")]
         public async Task<ActionResult<UserDto>> twoFactorVerificationByOTP(Credential credential)
@@ -152,7 +154,7 @@ namespace MFA.Controllers
             }
         }
 
-
+        // or googlr auth service type verification
         [HttpPost]
         [Route("twoFactorVerificationByAuthCode")]
         public async Task<ActionResult<UserDto>> twoFactorVerificationByAuthCode(Credential credential)
