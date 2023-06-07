@@ -17,8 +17,8 @@ using WebApp.Services;
 
 namespace MFA.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("/api/[controller]")]
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -48,9 +48,9 @@ namespace MFA.Controllers
                 return Unauthorized();
             }
             var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, true, false);
-              
-          //  var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-           
+
+            //  var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
             if (result.Succeeded)
             {
                 return Unauthorized();
@@ -74,13 +74,13 @@ namespace MFA.Controllers
                         $"Please use this code as the OTP: {securityCode}");
 
                     return "ok";
-                        //new UserDto
-                        //{
-                        //    Email = loginDto.Email,
-                        //    UserName = user.UserName,
-                        //    Token = _tokenServices.CreateToken(user),
-                        //    IsTwoFactor = true
-                        //};
+                    //new UserDto
+                    //{
+                    //    Email = loginDto.Email,
+                    //    UserName = user.UserName,
+                    //    Token = _tokenServices.CreateToken(user),
+                    //    IsTwoFactor = true
+                    //};
 
                 }
                 else
@@ -97,8 +97,8 @@ namespace MFA.Controllers
                 }
 
             }
-            
-           
+
+
         }
 
         [HttpPost]
@@ -107,7 +107,7 @@ namespace MFA.Controllers
         {
             var user = await _userManager.FindByEmailAsync(credential.Email);
             var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", credential.Securitycode);
-            if (result== true)
+            if (result == true)
             {
                 return new UserDto
                 {
@@ -134,11 +134,11 @@ namespace MFA.Controllers
                 Email = registerDto.Email,
                 UserName = registerDto.UserName,
                 FirstName = registerDto.UserName,
-                TwoFactorEnabled=false
+                TwoFactorEnabled = false
             };
             try
             {
-                var clientURI = "https://localhost:44312/Account/ConfirmEmail";
+                var clientURI = "https://localhost:44305/api/Account/ConfirmEmail";
                 var result = await _userManager.CreateAsync(user, registerDto.Password);
                 if (!result.Succeeded)
                 {
@@ -205,6 +205,6 @@ namespace MFA.Controllers
 public class Credential
 {
     public string Email { get; set; }
-    public string  Securitycode { get; set; }
+    public string Securitycode { get; set; }
 
 }

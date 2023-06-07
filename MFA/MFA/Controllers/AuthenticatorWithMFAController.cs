@@ -1,4 +1,6 @@
-﻿using MFA.Dtos;
+﻿using System.Net.Http;
+using System.Net.Http.Headers;
+using MFA.Dtos;
 using MFA.Entities;
 using MFA.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +13,12 @@ using System.Threading.Tasks;
 using System;
 using System.Security.Claims;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace MFA.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("/api/[controller]")]
     public class AuthenticatorWithMFAController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -39,11 +42,35 @@ namespace MFA.Controllers
         [Route("get-code")]
         public async Task<ActionResult<string>> getCode(LoginDto loginDto)
         {
-            var user = await _userManager.GetUserAsync(base.User);
+            var client = new HttpClient();
+            //var user = await _userManager.GetUserAsync(base.User);
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
             await _userManager.ResetAuthenticatorKeyAsync(user);
             var key = await _userManager.GetAuthenticatorKeyAsync(user);
+            string API_Url = "https://api.sms.net.bd/sendsms";
+            string API_Key = "tP7Fk8U4GQq5JY2q2Bmf95zuZ92UFK7Z7t4pY37X";
+            string Text_Massage = key;
+            string To_Phone_Number = "8801885831037";
+
+            client.BaseAddress = new Uri(API_Url);// //
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = client.GetAsync("?api_key=" + API_Key + "&msg=" + Text_Massage + "&to=" + To_Phone_Number).Result;
+            using (HttpContent content = response.Content)
+            {
+                var bkresult = content.ReadAsStringAsync().Result;
+                dynamic stuff = JsonConvert.DeserializeObject(bkresult);
+                if (stuff.error == "0")
+                {
+                    Console.WriteLine(stuff.msg);
+                }
+                else
+                {
+                    Console.WriteLine("Sms Not Send, " + stuff.msg);
+                }
+
+            }
             return key;
-           
+
         }
 
         [HttpPost]
@@ -66,7 +93,7 @@ namespace MFA.Controllers
             return true;
         }
 
-       
+
     }
 }
 

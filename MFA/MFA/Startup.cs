@@ -68,12 +68,13 @@ namespace MFA
                     o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                 });
 
-            
+
             services.AddAuthorization();
+            services.AddMvc();
             services.Configure<SmtpSettings>(Configuration.GetSection("SMTP"));
             services.AddScoped<ITokenServices, TokenService>();
             services.AddSingleton<IEmailService, EmailService>();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,14 +94,23 @@ namespace MFA
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+
+
             app.UseRouting();
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute("Default", "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }
