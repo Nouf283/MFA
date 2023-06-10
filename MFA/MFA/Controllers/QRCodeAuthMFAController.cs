@@ -60,11 +60,35 @@ namespace MFA.Controllers
             }
             ViewModel.Key = key;
             ViewModel.QRCodeBytes = GenerateQRCodeBytes("my web app", key, user.Email);
-            return null;
-         
+
+            // Convert the QR code image to base64 string
+            var base64Image = Convert.ToBase64String(ViewModel.QRCodeBytes);
+
+            // Return the base64 image string in the API response
+            return Ok(new { QrCodeImage = base64Image });
+
             //var formattedKey = GenerateQrCode("", authenticatorKey);
             //return Ok(new TfaSetupDto
             //{ IsTfaEnabled = isTfaEnabled, AuthenticatorKey = authenticatorKey, FormattedKey = formattedKey });
+        }
+
+        [HttpPost("tfa-setup")] // make object
+        public async Task<IActionResult> PostTfaSetup([FromBody] SetupMFAViewModel setupMFAViewModel)
+        {
+            var user = await _userManager.FindByNameAsync(setupMFAViewModel.Email);
+            var isValidCode = await _userManager
+                .VerifyTwoFactorTokenAsync(user,
+                  _userManager.Options.Tokens.AuthenticatorTokenProvider,
+                  setupMFAViewModel.SecurityCode);
+            if (isValidCode)
+            {
+                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                return Ok(new SetupMFAViewModel { IsTfaEnabled = true });
+            }
+            else
+            {
+                return BadRequest("Invalid code");
+            }
         }
 
 
@@ -76,7 +100,6 @@ namespace MFA.Controllers
                 QRCodeGenerator.ECCLevel.Q);
             var qrCode = new QRCode(qrCodeData);
             var qrCodeImage = qrCode.GetGraphic(20);
-
             return BitmapToByteArray(qrCodeImage);
         }
 
@@ -89,16 +112,18 @@ namespace MFA.Controllers
             }
         }
     }
-    
+
 }
 
-    public class SetupMFAViewModel
-    {
-        public string Key { get; set; }
+public class SetupMFAViewModel
+{
+    public string Key { get; set; }
+    public string Email { get; set; }
 
-        [Required]
-        [Display(Name = "Code")]
-        public string SecurityCode { get; set; }
+    [Required]
+    [Display(Name = "Code")]
+    public string SecurityCode { get; set; }
 
-        public Byte[] QRCodeBytes { get; set; }
-    }
+    public Byte[] QRCodeBytes { get; set; }
+    public bool IsTfaEnabled { get; set; }
+}
