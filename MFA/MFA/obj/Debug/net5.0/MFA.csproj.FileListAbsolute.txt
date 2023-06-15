@@ -87,3 +87,7 @@ C:\Projects\MFA\MFA\MFA\obj\Debug\net5.0\ref\MFA.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\Humanizer.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\QRCoder.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\System.Drawing.Common.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
