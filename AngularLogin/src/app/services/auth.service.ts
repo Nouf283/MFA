@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../Models/user';
+import { LoginDto, User, UserDto } from '../Models/user';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
@@ -8,11 +8,12 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-
- private userSubject: BehaviorSubject<User | null>;
+private userSubject: BehaviorSubject<User | null>;
+private currentUserSource = new BehaviorSubject<User | null>(null);
+ currentUser$ = this.currentUserSource.asObservable();
  public user: Observable<User | null>;
 
-  endpoint: string = 'http://localhost:4000/api';
+  endpoint: string = 'https://localhost:44305/api';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
   currentUser = {};
   constructor(private http: HttpClient, public router: Router) {}
@@ -33,12 +34,12 @@ export class AuthService {
 //         });
 //       });
 //   }
-login(user: User) {
-    return this.http.post<any>(`${this.endpoint}/users/authenticate`, user)
+login(loginDto:LoginDto) {
+    return this.http.post<any>(`${this.endpoint}/account/login`, loginDto)
         .pipe(map(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(user));
-            this.userSubject.next(user);
+            this.currentUserSource.next(user);
             return user;
         }));
 }

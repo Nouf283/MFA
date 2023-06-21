@@ -4,6 +4,7 @@ import { AccountComponent } from './account/account.component';
 import { AccountRoutingModule } from './account-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from '../services/account.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { AccountService } from '../services/account.service';
     
   ],
   providers: [
-    AccountService
+    AccountService,
+    AuthService
   ]
 })
 export class AccountModule { }
