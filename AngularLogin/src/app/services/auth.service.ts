@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { User } from '../Models/user';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
 import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+
+ private userSubject: BehaviorSubject<User | null>;
+ public user: Observable<User | null>;
+
   endpoint: string = 'http://localhost:4000/api';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
   currentUser = {};
@@ -22,17 +22,34 @@ export class AuthService {
     return this.http.post(api, user).pipe(catchError(this.handleError));
   }
   // Sign-in
-  signIn(user: User) {
-    return this.http
-      .post<any>(`${this.endpoint}/signin`, user)
-      .subscribe((res: any) => {
-        localStorage.setItem('access_token', res.token);
-        this.getUserProfile(res._id).subscribe((res) => {
-          this.currentUser = res;
-          this.router.navigate(['user-profile/' + res.msg._id]);
-        });
-      });
-  }
+//   signIn(user: User) {
+//     return this.http
+//       .post<any>(`${this.endpoint}/signin`, user)
+//       .subscribe((res: any) => {
+//         localStorage.setItem('access_token', res.token);
+//         this.getUserProfile(res._id).subscribe((res) => {
+//           this.currentUser = res;
+//           this.router.navigate(['user-profile/' + res.msg._id]);
+//         });
+//       });
+//   }
+login(user: User) {
+    return this.http.post<any>(`${this.endpoint}/users/authenticate`, user)
+        .pipe(map(user => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            localStorage.setItem('user', JSON.stringify(user));
+            this.userSubject.next(user);
+            return user;
+        }));
+}
+
+logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem('user');
+    this.userSubject.next(null);
+    this.router.navigate(['/login']);
+}
+    
   getToken() {
     return localStorage.getItem('access_token');
   }
