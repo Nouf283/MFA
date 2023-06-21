@@ -5,14 +5,14 @@
             <h1 class="mb-3">Login</h1>
         </div>
         <div class="form-floating mb-3">    
-            <input type="email" formControlName="email" class="form-control" id="floatingInput" [ngModel]="loginDto.email"  placeholder="email">
+            <input type="email" formControlName="email" class="form-control" id="floatingInput" [(ngModel)]="loginDto.email"  placeholder="email">
             <label for="floatingInput">Email</label>
         </div>
         <div class="text-center mb-4">  
             <h1 class="mb-3">Password</h1>
         </div>
         <div class="form-floating mb-3">    
-            <input type="password" formControlName="password" class="form-control" id="floatingPassword" [ngModel]="loginDto.password" placeholder="password">
+            <input type="password" formControlName="password" class="form-control" id="floatingPassword" [(ngModel)]="loginDto.password" placeholder="password">
             <label for="floatingPassword">Password</label>
         </div>
         <div class="p-grid">

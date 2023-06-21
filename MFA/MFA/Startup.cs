@@ -45,8 +45,8 @@ namespace MFA
             services.AddIdentityCore<AppUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
-                options.SignIn.RequireConfirmedAccount = true;
+               // options.SignIn.RequireConfirmedEmail = true;
+                //options.SignIn.RequireConfirmedAccount = true;
 
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager<SignInManager<AppUser>>().
@@ -64,22 +64,24 @@ namespace MFA
                         ValidateIssuer = true,
                         ValidateAudience = false
                     };
-                }).AddCookie(IdentityConstants.TwoFactorUserIdScheme, o =>
-                {
-                    o.Cookie.Name = IdentityConstants.TwoFactorUserIdScheme;
-                    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-                }
-                ).AddCookie(IdentityConstants.TwoFactorRememberMeScheme, o =>
-                {
-                    o.Cookie.Name = IdentityConstants.TwoFactorRememberMeScheme;
-                    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-                }
-                ).
-                AddCookie(IdentityConstants.ApplicationScheme, o =>
-                {
-                    o.Cookie.Name = IdentityConstants.ApplicationScheme;
-                    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-                });
+                })
+                //.AddCookie(IdentityConstants.TwoFactorUserIdScheme, o =>
+                //{
+                //    o.Cookie.Name = IdentityConstants.TwoFactorUserIdScheme;
+                //    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                //}
+                //).AddCookie(IdentityConstants.TwoFactorRememberMeScheme, o =>
+                //{
+                //    o.Cookie.Name = IdentityConstants.TwoFactorRememberMeScheme;
+                //    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                //}
+                //).
+                //AddCookie(IdentityConstants.ApplicationScheme, o =>
+                //{
+                //    o.Cookie.Name = IdentityConstants.ApplicationScheme;
+                //    o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                //})
+                ;
 
             services.AddAuthorization();
             services.AddMvc();
