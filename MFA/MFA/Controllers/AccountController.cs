@@ -38,71 +38,98 @@ namespace MFA.Controllers
             this.EmailMFA = new EmailMFA();
         }
 
+        //[HttpPost]
+        //[Route("login")]
+        //public async Task<ActionResult<string>> Login(LoginDto loginDto)
+        //{
+        //    var user = await _userManager.FindByEmailAsync(loginDto.Email);
+        //    if (user == null)
+        //    {
+        //        return Unauthorized();
+        //    }
+        //   // var isTwoFactorClientRemembered = await IsTwoFactorClientRememberedAsync(user);
+        //    var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password,true,false);
+
+        //    //  var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+        //    if (result.Succeeded)
+        //    {
+        //        return Unauthorized();
+        //    }
+        //    else
+        //    {
+        //        //problem istwologin na hole auth error khay
+        //        if (result.RequiresTwoFactor)
+        //        {
+        //            var user1 = await _userManager.FindByEmailAsync(loginDto.Email);
+
+        //            this.EmailMFA.SecurityCode = string.Empty;
+        //            this.EmailMFA.RememberMe = true;
+
+        //            // Generate the code
+        //            var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+        //            // Send to the user
+        //            await _emailService.SendAsync("noufawal0311@gmail.com",
+        //                loginDto.Email,
+        //                "My Web App's OTP",
+        //                $"Please use this code as the OTP: {securityCode}");
+
+        //            // or get-code phase from AuthenticatorWithMFAController
+
+        //            return "ok";
+        //            //new UserDto
+        //            //{
+        //            //    Email = loginDto.Email,
+        //            //    UserName = user.UserName,
+        //            //    Token = _tokenServices.CreateToken(user),
+        //            //    IsTwoFactor = true
+        //            //};
+
+        //        }
+        //        else
+        //        {
+        //            return "two factor page";
+        //            //return new UserDto
+        //            //{
+        //            //    Email = loginDto.Email,
+        //            //    UserName = user.UserName,
+        //            //    Token = _tokenServices.CreateToken(user),
+        //            //    IsTwoFactor = false
+        //            //};
+
+        //        }
+
+        //    }
+
+
+        //}
+
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<string>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null)
             {
                 return Unauthorized();
             }
-           // var isTwoFactorClientRemembered = await IsTwoFactorClientRememberedAsync(user);
-            var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password,true,false);
-
-            //  var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+           
+            var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, true, false);
 
             if (result.Succeeded)
             {
-                return Unauthorized();
+                return new UserDto
+                {
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Token = _tokenServices.CreateToken(user)
+                };
             }
             else
             {
-                //problem istwologin na hole auth error khay
-                if (result.RequiresTwoFactor)
-                {
-                    var user1 = await _userManager.FindByEmailAsync(loginDto.Email);
-
-                    this.EmailMFA.SecurityCode = string.Empty;
-                    this.EmailMFA.RememberMe = true;
-
-                    // Generate the code
-                    var securityCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-                    // Send to the user
-                    await _emailService.SendAsync("noufawal0311@gmail.com",
-                        loginDto.Email,
-                        "My Web App's OTP",
-                        $"Please use this code as the OTP: {securityCode}");
-
-                    // or get-code phase from AuthenticatorWithMFAController
-
-                    return "ok";
-                    //new UserDto
-                    //{
-                    //    Email = loginDto.Email,
-                    //    UserName = user.UserName,
-                    //    Token = _tokenServices.CreateToken(user),
-                    //    IsTwoFactor = true
-                    //};
-
-                }
-                else
-                {
-                    return "two factor page";
-                    //return new UserDto
-                    //{
-                    //    Email = loginDto.Email,
-                    //    UserName = user.UserName,
-                    //    Token = _tokenServices.CreateToken(user),
-                    //    IsTwoFactor = false
-                    //};
-
-                }
-
+                return NotFound();
             }
-
-
         }
 
         // one type of two way verification
