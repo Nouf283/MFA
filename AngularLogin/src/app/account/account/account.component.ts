@@ -6,6 +6,7 @@ import { User } from 'src/app/Models/employee';
 import { LoginDto } from 'src/app/Models/user';
 import { AccountService } from 'src/app/services/account.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-account',
@@ -21,8 +22,9 @@ export class AccountComponent implements OnInit{
     email: new FormControl('', Validators.required),
     password: new FormControl('',Validators.required)
   })
+  sanitizer: any;
 
-  constructor(public accountService:AccountService,public authService:AuthService) {
+  constructor(public accountService:AccountService,public authService:AuthService,public _sanitizer: DomSanitizer) {
     this.loginDto = new LoginDto();
   }
 
@@ -39,16 +41,16 @@ export class AccountComponent implements OnInit{
     let _pictype = ".png";
     if (this.file !== undefined && this.file !== null) {
       let _type = this.function(_pictype);
-      const byteCharacters = atob(this.file);
+      const byteCharacters = window.atob(this.file);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
           byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: _type });
-       this.imageUrl = URL.createObjectURL(blob);
-      // this.attachmentFile = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${this.attachment}`);
-
+      const url = URL.createObjectURL(blob);
+       //this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${blob}`);
+       this.imageUrl = this._sanitizer.bypassSecurityTrustResourceUrl(url);
       // const objectUrl: string = URL.createObjectURL(blob);
       
        

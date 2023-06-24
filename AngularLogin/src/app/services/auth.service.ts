@@ -76,8 +76,9 @@ logout() {
   }
 
   getQRScanImage(): Observable<any> {
-    let email = "cleinttest123@gmail.com";
-    let api = `${this.endpoint}/qrcodeauthmfa/qrcode-setup/${email}`;
+   // let email = "cleinttest123@gmail.com";
+   let email = "noufawal0311@gmail.com";
+    let api = `${this.endpoint}/qrcodeAuthMFA/qrcode-setup/${email}`;
     return this.http.get(api, { headers: this.headers }).pipe(
       map((res) => {
         return res;

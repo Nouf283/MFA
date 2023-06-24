@@ -44,7 +44,7 @@ namespace MFA.Controllers
         }
 
 
-        [HttpGet("qrcode-setup")]
+        [HttpGet("qrcode-setup/{email}")]
         public async Task<IActionResult> GetQrCodeSetup(string email)
         {
             var ViewModel = new SetupMFAViewModel();
