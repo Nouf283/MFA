@@ -11,8 +11,8 @@ export class AuthService {
 private userSubject: BehaviorSubject<User | null>;
 private currentUserSource = new BehaviorSubject<User | null>(null);
  currentUser$ = this.currentUserSource.asObservable();
- public user: Observable<User | null>;
-
+  public user: Observable<User | null>;
+ 
   endpoint: string = 'https://localhost:44305/api';
   headers = new HttpHeaders().set('Content-Type', 'application/json');
   currentUser = {};
@@ -74,6 +74,19 @@ logout() {
       catchError(this.handleError)
     );
   }
+
+  getQRScanImage(): Observable<any> {
+    let email = "cleinttest123@gmail.com";
+    let api = `${this.endpoint}/qrcodeauthmfa/qrcode-setup/${email}`;
+    return this.http.get(api, { headers: this.headers }).pipe(
+      map((res) => {
+        return res;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+
   // Error
   handleError(error: HttpErrorResponse) {
     let msg = '';
@@ -86,4 +99,6 @@ logout() {
     }
     return throwError(msg);
   }
+
+  
 }
