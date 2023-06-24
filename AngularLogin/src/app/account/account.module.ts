@@ -5,6 +5,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { AuthService } from 'src/app/services/auth.service';
   imports: [
     CommonModule,
     AccountRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
     
   ],
   providers: [

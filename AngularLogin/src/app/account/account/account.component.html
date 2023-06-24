@@ -24,8 +24,17 @@
 
 <div class="d-flex justify-content-center mt-5">    
     <div class="col-3">   
-        <img [src]="imageUrl" alt="My Image" />
+        <img [src]="imageUrl" style="height: 200px;
+        width: 50%;" alt="My Image" />
     </div>
+    <div class="col-3">    
+        <input type="code"  class="form-control" id="floatingPassword" [(ngModel)]="code" placeholder="code">
+        <label for="code">Code</label>
+    </div>
+    <div class="p-grid">
+        <button class="btn btn-lg btn-primary mb-3" onclick="add();">Submit</button>
+     </div>
+    
   </div>
 
 

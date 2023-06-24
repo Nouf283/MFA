@@ -17,3 +17,8 @@ export class UserDto {
     token: string;
 }
 
+export class SetupMFAViewModel {
+    email : String;
+    securityCode: String;
+    token: string;
+}

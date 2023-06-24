@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/Models/employee';
-import { LoginDto } from 'src/app/Models/user';
+import { LoginDto, SetupMFAViewModel } from 'src/app/Models/user';
 import { AccountService } from 'src/app/services/account.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DomSanitizer } from '@angular/platform-browser'
@@ -18,23 +18,34 @@ export class AccountComponent implements OnInit{
   loginDto: LoginDto;
   public file: any;
   imageUrl: any;
+  code: any;
   loginForm = new FormGroup({
     email: new FormControl('', Validators.required),
     password: new FormControl('',Validators.required)
   })
   sanitizer: any;
+  setupMFAViewModel: SetupMFAViewModel;
 
   constructor(public accountService:AccountService,public authService:AuthService,public _sanitizer: DomSanitizer) {
     this.loginDto = new LoginDto();
   }
 
   ngOnInit() {
+
     this.authService.getQRScanImage().subscribe({
       next: x => this.loadData(x)
     });
   }
 
-  
+  add() {
+    this.setupMFAViewModel = new SetupMFAViewModel();
+    this.setupMFAViewModel.email = "noufawal0311@gmail.com";
+    this.setupMFAViewModel.securityCode = this.code;
+
+    this.authService.submitSecurityCode(this.setupMFAViewModel).subscribe({
+      next: user => console.log(user)
+    })
+  }
 
   loadData(x: any) {
     console.log(x);

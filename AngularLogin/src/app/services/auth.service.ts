@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginDto, User, UserDto } from '../Models/user';
+import { LoginDto, SetupMFAViewModel, User, UserDto } from '../Models/user';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse} from '@angular/common/http';
@@ -40,6 +40,14 @@ login(loginDto:LoginDto) {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(user));
             this.currentUserSource.next(user);
+            return user;
+        }));
+  }
+  
+  submitSecurityCode(sc:SetupMFAViewModel) {
+    return this.http.post<any>(`${this.endpoint}/qrcodeAuthMFA/tfa-setup`, sc)
+        .pipe(map(user => {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
             return user;
         }));
 }
