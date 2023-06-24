@@ -81,6 +81,7 @@ logout() {
     let api = `${this.endpoint}/qrcodeAuthMFA/qrcode-setup/${email}`;
     return this.http.get(api, { headers: this.headers }).pipe(
       map((res) => {
+        console.log(res);
         return res;
       }),
       catchError(this.handleError)

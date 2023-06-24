@@ -37,7 +37,8 @@ export class AccountComponent implements OnInit{
   
 
   loadData(x: any) {
-    this.file = x;
+    console.log(x);
+    this.file = x.qrCodeImage;
     let _pictype = ".png";
     if (this.file !== undefined && this.file !== null) {
       let _type = this.function(_pictype);
