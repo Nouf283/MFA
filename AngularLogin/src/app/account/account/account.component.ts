@@ -38,6 +38,7 @@ export class AccountComponent implements OnInit{
   }
 
   add() {
+    debugger;
     this.setupMFAViewModel = new SetupMFAViewModel();
     this.setupMFAViewModel.email = "noufawal0311@gmail.com";
     this.setupMFAViewModel.securityCode = this.code;
