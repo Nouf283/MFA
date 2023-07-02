@@ -7,6 +7,9 @@ import { LoginDto, SetupMFAViewModel } from 'src/app/Models/user';
 import { AccountService } from 'src/app/services/account.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { DomSanitizer } from '@angular/platform-browser'
+// import {
+//   LinkedInService
+// } from 'angular-linkedin-sdk';
 
 @Component({
   selector: 'app-account',
@@ -26,7 +29,14 @@ export class AccountComponent implements OnInit{
   sanitizer: any;
   setupMFAViewModel: SetupMFAViewModel;
 
-  constructor(public accountService:AccountService,public authService:AuthService,public _sanitizer: DomSanitizer) {
+  linkedInCredentials = {
+    clientId: "787mmc8unjp87s",
+    redirectUrl: "https://localhost:44305/api/account/linkedInLogin",
+    scope: "r_liteprofile%20r_emailaddress%20w_member_social" // To read basic user profile data and email
+  };
+
+  constructor(public accountService: AccountService, public authService: AuthService, public _sanitizer: DomSanitizer,
+   ) {
     this.loginDto = new LoginDto();
   }
 
@@ -46,6 +56,12 @@ export class AccountComponent implements OnInit{
     this.authService.submitSecurityCode(this.setupMFAViewModel).subscribe({
       next: user => console.log(user)
     })
+  }
+
+  login() {
+    window.location.href = `https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=${
+      this.linkedInCredentials.clientId
+    }&redirect_uri=${this.linkedInCredentials.redirectUrl}&scope=${this.linkedInCredentials.scope}`;
   }
 
   loadData(x: any) {

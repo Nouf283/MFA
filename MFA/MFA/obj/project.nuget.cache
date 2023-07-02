@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "39lHYsgTZQ7zgUMbf4Vy3HGlm9LwH596htfCn6EDIzfYw9tLKBxJdaNITsXCq/1ewaDBhB9W8tTlUWTlnTSdeA==",
+  "dgSpecHash": "KFBcgu+WOlRqN1pDw94wkIkExMaNlmT5acICkjLZnuTru+37v1y+h3C1y3wF6GmYt8iZ2/ZrbsEpKxsMFmwhtQ==",
   "success": true,
   "projectFilePath": "C:\\Projects\\MFA\\MFA\\MFA\\MFA.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.authentication.cookies\\2.2.0\\microsoft.aspnetcore.authentication.cookies.2.2.0.nupkg.sha512",
     "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
     "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.17\\microsoft.aspnetcore.authentication.jwtbearer.5.0.17.nupkg.sha512",
+    "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.authentication.oauth\\2.2.0\\microsoft.aspnetcore.authentication.oauth.2.2.0.nupkg.sha512",
     "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.17\\microsoft.aspnetcore.cryptography.internal.5.0.17.nupkg.sha512",
     "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.17\\microsoft.aspnetcore.cryptography.keyderivation.5.0.17.nupkg.sha512",
     "C:\\Users\\noufa\\.nuget\\packages\\microsoft.aspnetcore.dataprotection\\2.2.0\\microsoft.aspnetcore.dataprotection.2.2.0.nupkg.sha512",

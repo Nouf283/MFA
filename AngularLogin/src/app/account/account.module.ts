@@ -6,14 +6,16 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { FormsModule } from '@angular/forms';
+// import { LinkedInSdkModule } from 'angular-linkedin-sdk';
 
 
 @NgModule({
   declarations: [
-    AccountComponent,
+    AccountComponent
     
   ],
   imports: [
+   // LinkedInSdkModule,
     CommonModule,
     AccountRoutingModule,
     ReactiveFormsModule,

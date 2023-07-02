@@ -272,6 +272,16 @@ namespace MFA.Controllers
         }
 
         [HttpGet]
+        [Route("linkedInLogin")]
+        public async Task<ActionResult<string>> linkedInLogin()
+        {
+            //var userEntity = await _userManager.FindByIdAsync(userId);
+            //var confirmResult = await _userManager.ConfirmEmailAsync(userEntity, token);
+
+            return "please login";
+        }
+
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
