@@ -30,7 +30,7 @@ export class AccountComponent implements OnInit{
   setupMFAViewModel: SetupMFAViewModel;
 
   linkedInCredentials = {
-    clientId: "787mmc8unjp87s",
+    clientId: "78vqzhsn5aeie4",
     redirectUrl: "https://localhost:44305/api/account/linkedInLogin",
     scope: "r_liteprofile%20r_emailaddress%20w_member_social" // To read basic user profile data and email
   };
