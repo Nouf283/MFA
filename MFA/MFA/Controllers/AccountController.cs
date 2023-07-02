@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +28,7 @@ namespace MFA.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenServices _tokenServices;
         private readonly IEmailService _emailService;
+        private readonly HttpClient _httpClient;
         public EmailMFA EmailMFA { get; set; }
 
         public AccountController(UserManager<AppUser> userManager,
@@ -36,6 +40,7 @@ namespace MFA.Controllers
             this._tokenServices = tokenServices;
             this._emailService = emailService;
             this.EmailMFA = new EmailMFA();
+            _httpClient = new HttpClient();
         }
 
         //[HttpPost]
@@ -278,7 +283,51 @@ namespace MFA.Controllers
             //var userEntity = await _userManager.FindByIdAsync(userId);
             //var confirmResult = await _userManager.ConfirmEmailAsync(userEntity, token);
 
-            return "please login";
+            var clientId = "78vqzhsn5aeie4";
+            var clientSecret = "dlX3bATIxp6hGHjK";
+            var redirectUri = "https://localhost:44305/api/account/linkedInLogin";
+
+            var accessTokenEndpoint = "https://www.linkedin.com/oauth/v2/accessToken";
+            var accessTokenRequest = new HttpRequestMessage(HttpMethod.Post, accessTokenEndpoint);
+
+            var requestContent = new FormUrlEncodedContent(new[]
+            {
+            new KeyValuePair<string, string>("grant_type", "authorization_code"),
+            new KeyValuePair<string, string>("code", code),
+            new KeyValuePair<string, string>("client_id", clientId),
+            new KeyValuePair<string, string>("client_secret", clientSecret),
+            new KeyValuePair<string, string>("redirect_uri", redirectUri)
+        });
+
+            accessTokenRequest.Content = requestContent;
+
+            var response = await _httpClient.SendAsync(accessTokenRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                // Extract the access token from the response
+                var accessToken = ExtractAccessToken(responseContent);
+                return accessToken;
+            }
+
+            throw new Exception("Failed to retrieve access token from LinkedIn.");
+
+            //return "please login";
+        }
+
+        private string ExtractAccessToken(string responseContent)
+        {
+            // Parse the JSON response to extract the access token
+            var responseObject = JObject.Parse(responseContent);
+            var accessToken = responseObject.GetValue("access_token")?.ToString();
+
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                throw new Exception("Failed to extract access token from LinkedIn response.");
+            }
+
+            return accessToken;
         }
 
         [HttpGet]
