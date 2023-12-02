@@ -315,10 +315,10 @@ namespace MFA.Controllers
                 // Extract the access token from the response
                 var accessToken = ExtractAccessToken(responseContent);
                 string url = "http://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,picture-url)?format=json";
-                var test = GetJobDescriptions("Hikvision Bangladesh", accessToken);
+                 var test = GetJobDescriptions("Hikvision Bangladesh", accessToken);
               //  string json = oAuthLi.oAuthWebRequest(WebUtility.Method.GET, url, "");
-               //return accessToken;
-               return test.ToString();
+               return accessToken;
+               //return test.ToString();
             }
 
             throw new Exception("Failed to retrieve access token from LinkedIn.");
