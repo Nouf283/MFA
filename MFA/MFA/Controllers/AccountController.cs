@@ -11,12 +11,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using WebApp.Services;
+using System.Net.Http.Json;
+using System.Net.Http;
 
 namespace MFA.Controllers
 {
@@ -29,6 +33,8 @@ namespace MFA.Controllers
         private readonly ITokenServices _tokenServices;
         private readonly IEmailService _emailService;
         private readonly HttpClient _httpClient;
+        private readonly string apiUrl = "https://api.linkedin.com/v2/jobs";
+
         public EmailMFA EmailMFA { get; set; }
 
         public AccountController(UserManager<AppUser> userManager,
@@ -308,7 +314,11 @@ namespace MFA.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 // Extract the access token from the response
                 var accessToken = ExtractAccessToken(responseContent);
-                return accessToken;
+                string url = "http://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,picture-url)?format=json";
+                var test = GetJobDescriptions("Hikvision Bangladesh", accessToken);
+              //  string json = oAuthLi.oAuthWebRequest(WebUtility.Method.GET, url, "");
+               //return accessToken;
+               return test.ToString();
             }
 
             throw new Exception("Failed to retrieve access token from LinkedIn.");
@@ -346,6 +356,31 @@ namespace MFA.Controllers
             };
 
         }
+
+        public async Task<string> GetJobDescriptions(string companyName,string accessToken)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                // Set up headers and parameters
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                var parameters = $"?keywords=software engineer&company={companyName}";
+
+                // Make a request to the LinkedIn API
+                var response = await httpClient.GetAsync($"{apiUrl}{parameters}");
+
+                // Handle the response
+                if (response.IsSuccessStatusCode)
+                {
+                    var jobsData = await response.Content.ReadAsAsync<LinkedInJobsResponse>();
+                    var jobDescriptions = string.Join("\n\n", jobsData.Elements.Select(job => $"{job.Title}\n{job.Description}"));
+                    return jobDescriptions;
+                }
+                else
+                {
+                    return $"Error: {response.StatusCode}, {await response.Content.ReadAsStringAsync()}";
+                }
+            }
+        }
     }
 }
 
@@ -354,4 +389,15 @@ public class Credential
     public string Email { get; set; }
     public string Securitycode { get; set; }
 
+}
+
+public class LinkedInJobsResponse
+{
+    public List<LinkedInJob> Elements { get; set; }
+}
+
+public class LinkedInJob
+{
+    public string Title { get; set; }
+    public string Description { get; set; }
 }

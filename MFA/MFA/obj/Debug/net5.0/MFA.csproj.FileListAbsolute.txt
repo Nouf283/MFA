@@ -91,3 +91,7 @@ C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\QRCoder.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\System.Drawing.Common.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
 C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\System.Net.Http.WebRequest.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\System.Net.Http.Extensions.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\System.Net.Http.Formatting.dll
+C:\Projects\MFA\MFA\MFA\bin\Debug\net5.0\System.Net.Http.Primitives.dll
